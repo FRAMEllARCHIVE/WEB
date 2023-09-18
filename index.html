@@ -13,19 +13,25 @@
             height: 100vh;
             margin: 0;
         }
+
+        /* Style for the transparent button */
+        #transparentButton {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
-    <a id="paypalLink" href="https://www.paypal.com/donate/?hosted_button_id=QQ89543ABDLAS" target="_blank">⧉</a>
+    <a id="transparentButton" href="https://www.paypal.com/donate/?hosted_button_id=QQ89543ABDLAS"></a>
+    <div>⧉</div>
     <script>
-        // Add click event listener to the "⧉" element
-        document.getElementById("paypalLink").addEventListener("click", function(event) {
-            // Prevent the default behavior of the link (opening in the same tab)
-            event.preventDefault();
-            
-            // Open the link in a new tab or window
-            window.open(this.href, "_blank");
-        });
+        // Use the History API to change the URL in the address bar without triggering a full page reload
+        window.history.pushState({}, 'FRAME.ARCHIVE', '/⧉');
     </script>
 </body>
 </html>
