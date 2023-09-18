@@ -16,8 +16,16 @@
     </style>
 </head>
 <body>
-    <div>⧉</div>
+    <a id="paypalLink" href="https://www.paypal.com/donate/?hosted_button_id=QQ89543ABDLAS" target="_blank">⧉</a>
     <script>
+        // Add click event listener to the "⧉" element
+        document.getElementById("paypalLink").addEventListener("click", function(event) {
+            // Prevent the default behavior of the link (opening in the same tab)
+            event.preventDefault();
+            
+            // Open the link in a new tab or window
+            window.open(this.href, "_blank");
+        });
     </script>
 </body>
 </html>
