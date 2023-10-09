@@ -14,14 +14,17 @@
             margin: 0;
         }
 
-        #cameraViewContainer {
-            width: 80vh;
-            height: 80vh;
-            position: relative;
-            overflow: hidden;
-            background-color: black;
-            z-index: 2;
-        }
+#cameraViewContainer {
+    width: 40vh;
+    height: 40vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    background-color: black;
+    z-index: 2;
+}
 
         #cameraView {
             width: 100%;
