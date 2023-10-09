@@ -50,6 +50,8 @@
             opacity: 1;
         }
 
+
+
 #takePhotoButton {
     position: absolute;
     top: 80%;
@@ -75,9 +77,68 @@
     opacity: 0.4;
 }
 
+#openTextInputButton {
+    position: absolute;
+    top: 80%;
+    left: 18%;
+    background-color: black;
+    color: white;
+    width: 66px;
+    height: 66px;
+    font-size: 4.4rem;
+    border-radius: 50%;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.4;
+    transition: opacity 1.1s;
+}
+
+#openTextInputButton:hover {
+    opacity: 0.7;
+}
+
+#textInputContainer {
+    position: absolute;
+    bottom: 11%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0);
+    width: 69%;
+    height: 200px;
+    display: none;
+    z-index: 8;
+}
+
+#roundedTextInput {
+    display: flex;
+    align-items: center;
+}
+
+#textInput {
+    flex-grow: 1;
+    border: none;
+    border-radius: 22px;
+    padding: 11px;
+text-align: center;
+}
+
     </style>
 </head>
 <body>
+
+<div id="textInputContainer" style="display: none;">
+    <div id="roundedTextInput">
+        <input type="text" id="textInput" placeholder="Enter a link...">
+    </div>
+</div>
+<button id="openTextInputButton">+</button>
+
     <div id="cameraViewContainer">
         <video id="cameraView" autoplay></video>
     </div>
@@ -86,6 +147,39 @@
     <canvas id="photoCanvas" style="display: none;"></canvas>
     
     <script>
+
+const openTextInputButton = document.getElementById('openTextInputButton');
+const textInputContainer = document.getElementById('textInputContainer');
+const textInput = document.getElementById('textInput');
+
+let SAVED_LINK = '';
+
+
+openTextInputButton.addEventListener('click', () => {
+    textInputContainer.style.display = 'block';
+    textInput.focus();
+    textInput.placeholder = SAVED_LINK;
+});
+
+textInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === 'Go') {
+        SAVED_LINK = textInput.value;
+        textInputContainer.style.display = 'none';
+        textInput.value = ''; 
+        console.log('SAVED_LINK:', SAVED_LINK);
+updateOpenButtonOpacity();
+    }
+});
+
+function updateOpenButtonOpacity() {
+    if (SAVED_LINK && SAVED_LINK.trim() !== '') {
+        openTextInputButton.style.opacity = '0.9';
+    } else {
+        openTextInputButton.style.opacity = '0.4';
+    }
+}
+
+
         const cameraView = document.getElementById('cameraView');
         const startCameraButton = document.getElementById('startCameraButton');
         const takePhotoButton = document.getElementById('takePhotoButton');
