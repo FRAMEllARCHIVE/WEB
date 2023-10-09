@@ -37,7 +37,7 @@
             height: 100%;
             background-color: black;
             color: white;
-            font-size: 14rem;
+            font-size: 11rem;
             border: none;
             cursor: pointer;
             outline: none;
@@ -53,11 +53,11 @@
 #takePhotoButton {
     position: absolute;
     top: 80%;
-    right: 22%;
+    right: 18%;
     background-color: white;
     color: black;
-    width: 44px;
-    height: 44px;
+    width: 33px;
+    height: 33px;
     border-radius: 50%;
     padding: 0;
     border: none;
@@ -68,7 +68,7 @@
     justify-content: center;
     align-items: center;
     opacity: 0.7;
-    transition: opacity 2.2s;
+    transition: opacity 1.1s;
 }
 
 #takePhotoButton:hover {
@@ -97,7 +97,7 @@ async function startCamera() {
     try {
         const constraints = {
             video: {
-                facingMode: 'environment', // Set the facingMode here
+                facingMode: 'environment',
             },
             audio: false,
         };
