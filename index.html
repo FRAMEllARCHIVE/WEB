@@ -39,8 +39,6 @@
             height: 100%;
             background-color: black;
             color: white;
-            font-size: 11rem;
-            font-family: Arial, Helvetica, sans-serif;
             border: none;
             cursor: pointer;
             outline: none;
@@ -48,6 +46,12 @@
             transition: opacity 3.3s;
             z-index: 9;
         }
+
+#startCameraButton img {
+    width: 222px;
+    height: auto;
+}
+
 
         #startCameraButton:hover {
             opacity: 1;
@@ -59,7 +63,7 @@
     position: absolute;
     top: 20%;
     left: 18%;
-    transform: translate(+50%, -50%);
+    transform: translate(-50%, -50%);
     background-color: black;
     color: white;
     width: 11px;
@@ -105,7 +109,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.7;
+    opacity: 0.8;
     transition: opacity 1.1s;
 }
 
@@ -115,7 +119,7 @@
 }
 
 #takePhotoButton:hover {
-    opacity: 0.4;
+    opacity: 1;
 }
 
 #openTextInputButton {
@@ -133,7 +137,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.4;
+    opacity: 0.2;
     transition: opacity 1.1s;
 }
 
@@ -184,7 +188,7 @@ text-align: center;
     cursor: pointer;
     outline: none;
     z-index: 8;
-    opacity: 0.4;
+    opacity: 0.2;
     transition: opacity 1.1s;
 }
 
@@ -216,7 +220,7 @@ text-align: center;
     <div id="cameraViewContainer">
         <video id="cameraView" autoplay></video>
     </div>
-    <button id="startCameraButton" onclick="toggleFullscreen()">⧉</button>
+    <button id="startCameraButton" onclick="toggleFullscreen()"><img src="presplash.jpg"></button>
     <button id="MenuButton" onclick="toggleMenu()"><img src="frame.png"></button>
     <button id="takePhotoButton" disabled><img src="capture.png"></button>
     <canvas id="photoCanvas" style="display: none;"></canvas>
