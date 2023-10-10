@@ -201,11 +201,22 @@ text-align: center;
     opacity: 0.9;
 }
 
-
+        #tokenCountDisplay {
+            font-family: Arial, sans-serif;
+            font-size: 0.8rem;
+            color: white;
+            position: absolute;
+            top: calc(20% - 28px);
+            left: calc(18% + 15px);
+            opacity: 0.8;
+        }
 
     </style>
 </head>
 <body>
+
+
+<div id="tokenCountDisplay"></div>
 
 <button id="nodesShareButton"><img src="share.png"></button>
 
@@ -226,6 +237,10 @@ text-align: center;
     <canvas id="photoCanvas" style="display: none;"></canvas>
     
     <script>
+
+        var TOKEN_COUNT = 11;
+        var tokenCountDisplay = document.getElementById("tokenCountDisplay");
+        tokenCountDisplay.textContent = TOKEN_COUNT;
 
 const openTextInputButton = document.getElementById('openTextInputButton');
 const textInputContainer = document.getElementById('textInputContainer');
