@@ -80,7 +80,7 @@
     justify-content: center;
     align-items: center;
     opacity: 0.3;
-    transition: opacity 2.2s;
+    transition: opacity 3s;
 }
 
 #MenuButton img {
@@ -110,7 +110,7 @@
     justify-content: center;
     align-items: center;
     opacity: 0.8;
-    transition: opacity 1.1s;
+    transition: opacity 3s;
 }
 
 #takePhotoButton img {
@@ -119,7 +119,7 @@
 }
 
 #takePhotoButton:hover {
-    opacity: 1;
+    opacity: 0.9;
 }
 
 #openTextInputButton {
@@ -137,17 +137,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.2;
+    opacity: 0;
     transition: opacity 1.1s;
 }
 
 #openTextInputButton img {
     width: 44px;
     height: auto;
-}
-
-#openTextInputButton:hover {
-    opacity: 0.7;
 }
 
 #textInputContainer {
@@ -188,17 +184,13 @@ text-align: center;
     cursor: pointer;
     outline: none;
     z-index: 8;
-    opacity: 0.2;
+    opacity: 0;
     transition: opacity 1.1s;
 }
 
 #nodesShareButton img {
     width: 44px;
     height: auto;
-}
-
-#nodesShareButton:hover {
-    opacity: 0.9;
 }
 
         #tokenCountDisplay {
@@ -208,34 +200,52 @@ text-align: center;
             position: absolute;
             top: calc(20% - 28px);
             left: calc(18% + 15px);
-            opacity: 0.8;
+            opacity: 0;
+    transition: opacity 1.1s;
         }
 
     </style>
+
 </head>
+
 <body>
 
+    <div id="tokenCountDisplay"></div>
 
-<div id="tokenCountDisplay"></div>
+    <button id="nodesShareButton">
+        <img src="share.png">
+    </button>
 
-<button id="nodesShareButton"><img src="share.png"></button>
-
-<div id="textInputContainer" style="display: none;">
-    <div id="roundedTextInput">
-        <input type="text" id="textInput" placeholder="Enter a link..." value="" autocapitalize="none">
-
+    <div id="textInputContainer" style="display: none;">
+        <div id="roundedTextInput">
+            <input type="text" id="textInput" placeholder="Enter a link..." value="" autocapitalize="none">
+        </div>
     </div>
-</div>
-<button id="openTextInputButton"><img src="plus.png"></button>
+
+    <button id="openTextInputButton" style="pointer-events: none;">
+        <img src="plus.png">
+    </button>
 
     <div id="cameraViewContainer">
         <video id="cameraView" autoplay></video>
     </div>
-    <button id="startCameraButton" onclick="toggleFullscreen()"><img src="presplash.jpg"></button>
-    <button id="MenuButton" onclick="toggleMenu()"><img src="frame.png"></button>
-    <button id="takePhotoButton" disabled><img src="capture.png"></button>
+
+    <button id="startCameraButton" onclick="toggleFullscreen()">
+        <img src="presplash.jpg">
+    </button>
+
+    <button id="MenuButton" onclick="toggleMenu()">
+        <img src="frame.png">
+    </button>
+
+    <button id="takePhotoButton">
+        <img src="capture.png">
+    </button>
+
     <canvas id="photoCanvas" style="display: none;"></canvas>
-    
+
+</body>
+
     <script>
 
         var TOKEN_COUNT = 11;
@@ -249,6 +259,7 @@ const textInput = document.getElementById('textInput');
 let SAVED_LINK = '';
 
 openTextInputButton.addEventListener('click', () => {
+    openTextInputButton.style.opacity = 0.7;
     textInputContainer.style.display = 'block';
     textInput.focus();
     textInput.placeholder = SAVED_LINK;
@@ -268,7 +279,7 @@ function updateOpenButtonOpacity() {
     if (SAVED_LINK && SAVED_LINK.trim() !== '') {
         openTextInputButton.style.opacity = '0.9';
     } else {
-        openTextInputButton.style.opacity = '0.4';
+        openTextInputButton.style.opacity = '0.2';
     }
 }
 
@@ -332,6 +343,36 @@ async function startCamera() {
         window.addEventListener('DOMContentLoaded', () => {
             takePhotoButton.addEventListener('click', takePhoto);
         });
+
+var MENUVAR = 0
+
+function toggleMenu() {
+MENUVAR = (MENUVAR === 0) ? 1 : 0;
+
+    var openTextInputButton = document.getElementById('openTextInputButton');
+    var nodesShareButton = document.getElementById('nodesShareButton');
+    var tokenCountDisplay = document.getElementById('tokenCountDisplay');
+    var menuButton = document.getElementById('MenuButton');
+
+    if (MENUVAR === 1) {
+        menuButton.style.opacity = '0.8';
+        nodesShareButton.style.opacity = '0.3';
+        nodesShareButton.style.pointerEvents = 'auto';
+        openTextInputButton.style.opacity = '0.3';
+        openTextInputButton.style.pointerEvents = 'auto';
+        tokenCountDisplay.style.opacity = '0.7';
+    } else {
+        menuButton.style.opacity = '0.3';
+        nodesShareButton.style.opacity = '0';
+        nodesShareButton.style.pointerEvents = 'none';
+        tokenCountDisplay.style.opacity = '0';
+        openTextInputButton.style.opacity = '0';
+        openTextInputButton.style.pointerEvents = 'none';
+        textInputContainer.style.display = 'none';
+        SAVED_LINK = '';
+    }
+}
+
     </script>
 </body>
 </html>
