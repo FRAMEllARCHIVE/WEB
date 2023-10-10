@@ -61,7 +61,7 @@
         user-select: none;
 -webkit-tap-highlight-color: transparent;
     position: absolute;
-    top: 20%;
+    top: 18%;
     left: 18%;
     transform: translate(-50%, -50%);
     background-color: black;
@@ -88,7 +88,6 @@
     height: auto;
 }
 
-
 #MenuButton:hover {
     opacity: 0.9;
 }
@@ -97,7 +96,7 @@
     user-select: none;
 -webkit-tap-highlight-color: transparent;
     position: absolute;
-    top: 80%;
+    top: 82%;
     right: 18%;
     transform: translate(+50%, -50%);
     background-color: transparent;
@@ -126,7 +125,7 @@
 -webkit-tap-highlight-color: transparent;
     user-select: none;
     position: absolute;
-    top: 80%;
+    top: 82%;
     left: 18%;
     transform: translate(-50%, -50%);
     background-color: transparent;
@@ -148,11 +147,11 @@
 
 #textInputContainer {
     position: absolute;
-    bottom: 40%;
+    top: 25%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -0%);
     background-color: rgba(255, 255, 255, 0);
-    width: 78%;
+    width: 69%;
     height: 200px;
     display: none;
     z-index: 8;
@@ -164,6 +163,8 @@
 }
 
 #textInput {
+-webkit-tap-highlight-color: transparent;
+    user-select: none;
     flex-grow: 1;
     border: none;
     border-radius: 22px;
@@ -175,7 +176,7 @@ text-align: center;
 -webkit-tap-highlight-color: transparent;
     user-select: none;
     position: absolute;
-    top: 20%;
+    top: 18%;
     right: 18%;
     transform: translate(+50%, -50%);
     background-color: transparent;
@@ -194,12 +195,14 @@ text-align: center;
 }
 
         #tokenCountDisplay {
+-webkit-tap-highlight-color: transparent;
+    user-select: none;
             font-family: Arial, sans-serif;
             font-size: 0.8rem;
             color: white;
             position: absolute;
-            top: calc(20% - 28px);
-            left: calc(18% + 15px);
+            top: calc(18% - 27px);
+            left: calc(18% + 14px);
             opacity: 0;
     transition: opacity 1.1s;
         }
@@ -218,7 +221,7 @@ text-align: center;
 
     <div id="textInputContainer" style="display: none;">
         <div id="roundedTextInput">
-            <input type="text" id="textInput" placeholder="Enter a link..." value="" autocapitalize="none">
+            <input type="text" id="textInput" placeholder="" value="" autocapitalize="none">
         </div>
     </div>
 
