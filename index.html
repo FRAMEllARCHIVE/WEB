@@ -190,6 +190,19 @@ text-align: center;
     height: auto;
 }
 
+#QRContainer {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 9;
+}
+
+#QRImage {
+    width: 33vh;;
+    height: auto;
+    transform: translate(-50%, -50%);
+}
 
 #tokenCountDisplay {
 -webkit-tap-highlight-color: transparent;
@@ -242,6 +255,12 @@ user-select: none;
         <img src="share.png">
     </button>
 
+
+<div id="QRContainer" style="display: none;">
+    <img id="QRImage" src="QR.png">
+</div>
+
+
     <div id="textInputContainer" style="display: none;">
         <div id="roundedTextInput">
             <input type="text" id="textInput" placeholder="" value="" autocapitalize="none">
@@ -283,6 +302,15 @@ user-select: none;
 
 let SERVER_URL = 'http://34.175.91.146:8888'
 
+const shareButton = document.getElementById('ShareButton');
+const qrContainer = document.getElementById('QRContainer');
+
+shareButton.addEventListener('click', () => {
+    qrContainer.style.display = qrContainer.style.display === 'none' ? 'block' : 'none';
+    shareButton.style.opacity = shareButton.style.opacity === '0.3' ? '0.9' : '0.3';
+});
+
+
 function setTemporaryOpacity(element, opacity, duration) {
     element.style.opacity = opacity;
     setTimeout(function () {
@@ -290,8 +318,7 @@ function setTemporaryOpacity(element, opacity, duration) {
     }, duration);
 }
 
-
-        function open_file_chooser() {
+function open_file_chooser() {
             var fileInput = document.createElement("input");
             fileInput.type = "file";
             fileInput.click();
@@ -335,7 +362,6 @@ if (SAVED_LINK[0]) {
 } else {
     url = SERVER_URL + '/FRAME';
 }
-
 
                 var formData = new FormData();
                 formData.append("wavesequence", processedWavesequence);
@@ -685,6 +711,8 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
         openTextInputButton.style.opacity = '0';
         openTextInputButton.style.pointerEvents = 'none';
         textInputContainer.style.display = 'none';
+    qrContainer.style.display = qrContainer.style.display === 'none' ? 'block' : 'none';10:15 PM 2023-10-06
+
         SAVED_LINK = '';
     }
 }
