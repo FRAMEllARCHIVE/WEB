@@ -287,7 +287,6 @@ user-select: none;
     <img src="capture.png">
 </button>
 
-
     <canvas id="photoCanvas" style="display: none;"></canvas>
 
     <button id="openButton" onclick="open_file_chooser()">
@@ -306,7 +305,7 @@ const shareButton = document.getElementById('ShareButton');
 const qrContainer = document.getElementById('QRContainer');
 
 shareButton.addEventListener('click', () => {
-    qrContainer.style.display = qrContainer.style.display === 'none' ? 'block' : 'none';
+QRContainer.style.display = QRContainer.style.display === 'none' ? 'block' : 'none';
     shareButton.style.opacity = shareButton.style.opacity === '0.3' ? '0.9' : '0.3';
 });
 
@@ -711,7 +710,7 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
         openTextInputButton.style.opacity = '0';
         openTextInputButton.style.pointerEvents = 'none';
         textInputContainer.style.display = 'none';
-    qrContainer.style.display = qrContainer.style.display === 'none' ? 'block' : 'none';10:15 PM 2023-10-06
+    qrContainer.style.display = qrContainer.style.display === 'none' ? 'block' : 'none';
 
         SAVED_LINK = '';
     }
