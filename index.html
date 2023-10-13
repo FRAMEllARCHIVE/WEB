@@ -717,6 +717,16 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
 }
 
 
+window.addEventListener('popstate', function(event) {
+  if (event.state && event.state.initialPage) {
+    // Refresh the website
+    location.reload();
+  }
+});
+
+
+
+
     </script>
 </body>
 </html>
