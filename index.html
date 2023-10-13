@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRAME.ARCHIVE</title>
+    <title>FRAME </title>
     <link rel="icon" type="image/png" href="favicon.png">
+    <script async src="opencv.js"></script>
     <style>
         body {
             background-color: black;
@@ -51,7 +52,6 @@
     width: 222px;
     height: auto;
 }
-
 
         #startCameraButton:hover {
             opacity: 1;
@@ -108,17 +108,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.8;
-    transition: opacity 3s;
+    opacity: 0.9;
+    transition: opacity 1.1s;
 }
 
 #takePhotoButton img {
     width: 44px;
     height: auto;
-}
-
-#takePhotoButton:hover {
-    opacity: 0.9;
 }
 
 #openTextInputButton {
@@ -172,7 +168,7 @@
 text-align: center;
 }
 
-#nodesShareButton {
+#ShareButton {
 -webkit-tap-highlight-color: transparent;
     user-select: none;
     position: absolute;
@@ -189,14 +185,15 @@ text-align: center;
     transition: opacity 1.1s;
 }
 
-#nodesShareButton img {
+#ShareButton img {
     width: 44px;
     height: auto;
 }
 
-        #tokenCountDisplay {
+
+#tokenCountDisplay {
 -webkit-tap-highlight-color: transparent;
-    user-select: none;
+user-select: none;
             font-family: Arial, sans-serif;
             font-size: 0.8rem;
             color: white;
@@ -204,7 +201,33 @@ text-align: center;
             top: calc(18% - 27px);
             left: calc(18% + 14px);
             opacity: 0;
-    transition: opacity 1.1s;
+            transition: opacity 1.1s;
+}
+
+#openButton {
+-webkit-tap-highlight-color: transparent;
+    user-select: none;
+            position: absolute;
+            background-color: black;
+    transform: translate(-50%, -47%);
+            color: w;
+            border: none;
+            cursor: pointer;
+    top: 50%;
+    left: 50%;
+    z-index: 8;
+            opacity: 0.3;
+            transition: opacity 3.3s ease-in-out, visibility 0s 1s;
+        }
+
+#openButton img {
+    width: 133px;
+    height: auto;
+}
+
+#openButton:hover {
+            opacity: 0.9;
+            transition: opacity 3.3s ease-in-out;
         }
 
     </style>
@@ -215,7 +238,7 @@ text-align: center;
 
     <div id="tokenCountDisplay"></div>
 
-    <button id="nodesShareButton">
+    <button id="ShareButton">
         <img src="share.png">
     </button>
 
@@ -241,15 +264,140 @@ text-align: center;
         <img src="frame.png">
     </button>
 
-    <button id="takePhotoButton">
-        <img src="capture.png">
-    </button>
+<button id="takePhotoButton" onclick="takePhoto(); setTemporaryOpacity(this, 0.2, 444);">
+    <img src="capture.png">
+</button>
+
 
     <canvas id="photoCanvas" style="display: none;"></canvas>
+
+    <button id="openButton" onclick="open_file_chooser()">
+        <img src="frame.png">
+    </button>
+
 
 </body>
 
     <script>
+
+
+let SERVER_URL = 'http://34.175.91.146:8888'
+
+function setTemporaryOpacity(element, opacity, duration) {
+    element.style.opacity = opacity;
+    setTimeout(function () {
+        element.style.opacity = 0.9;
+    }, duration);
+}
+
+
+        function open_file_chooser() {
+            var fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.click();
+            fileInput.addEventListener("change", function () {
+                var selectedFile = this.files[0];
+                if (selectedFile) { 
+                processAndSendImage(selectedFile);
+
+                }
+            });
+        }
+
+        function processAndSendImage(selectedFile) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var img = new Image();
+
+            img.onload = function () {
+                canvas.width = 11;
+                canvas.height = 11;
+                ctx.drawImage(img, 0, 0, 11, 11);
+
+                var imageData = ctx.getImageData(0, 0, 11, 11).data;
+                var processedImage = [];
+
+                for (var i = 0; i < imageData.length; i += 4) {
+                    var pixel = [imageData[i], imageData[i + 1], imageData[i + 2]];
+                    processedImage.push(pixel.reverse());
+                }
+
+                var processedWavesequence = processedImage.join(",");
+
+                
+                var formData = new FormData();
+                formData.append("wavesequence", processedWavesequence);
+
+var url;
+
+if (SAVED_LINK[0]) {
+    url = SERVER_URL + '/ARCHIVE?link=' + encodeURIComponent(SAVED_LINK[0]) + '&wavesequence=' + encodeURIComponent(processedWavesequence);
+} else {
+    url = SERVER_URL + '/FRAME';
+}
+
+
+                var formData = new FormData();
+                formData.append("wavesequence", processedWavesequence);
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(function (response) {
+                    if (response.status === 201) {
+            SAVED_LINK = '';
+            TOKEN_COUNT -= 1;
+                        //updateButtonOpacity();
+                    } else if (response.status === 200) {
+                        return response.text();
+                    } else {
+                        console.error('Failed to send data to the server.');
+                    }
+                })
+                .then(function (url) {
+                    if (url) {
+                        if (!/^https?:\/\//i.test(url)) {
+                            url = 'https://' + url;
+                        }
+                        window.open(url, '_blank');
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+            };
+
+            img.src = URL.createObjectURL(selectedFile);
+        }
+
+function setCookie(name, value) {
+    document.cookie = name + "=" + value + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1, cookie.length);
+        }
+        if (cookie.indexOf(nameEQ) === 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+var TOKEN_COUNT = parseInt(getCookie("TOKEN_COUNT")) || 1;
+
+function updateTokenCount(newCount) {
+    TOKEN_COUNT = newCount;
+    setCookie("TOKEN_COUNT", TOKEN_COUNT);
+}
+
+// updateTokenCount(20);
 
         var TOKEN_COUNT = 11;
         var tokenCountDisplay = document.getElementById("tokenCountDisplay");
@@ -288,7 +436,7 @@ function updateOpenButtonOpacity() {
 
         const cameraView = document.getElementById('cameraView');
         const startCameraButton = document.getElementById('startCameraButton');
-        const takePhotoButton = document.getElementById('takePhotoButton');
+        const takePhotoButton3 = document.getElementById('takePhotoButton');
         const photoCanvas = document.getElementById('photoCanvas');
         const canvasContext = photoCanvas.getContext('2d');
         let stream;
@@ -308,28 +456,24 @@ async function startCamera() {
         takePhotoButton.disabled = false;
         startCameraButton.style.opacity = '0';
         startCameraButton.style.pointerEvents = 'none';
+openButton.style.opacity = '0';
+
+
     } catch (error) {
-        console.error('Error accessing the camera:', error);
+        startCameraButton.disabled = true;
+        startCameraButton.style.opacity = '0';
+        startCameraButton.style.pointerEvents = 'none';
+        takePhotoButton.disabled = true;
+        takePhotoButton.style.opacity = '0';
+        takePhotoButton.style.pointerEvents = 'none';
     }
 }
-
-        function takePhoto() {
-            if (stream) {
-                cameraView.pause();
-                photoCanvas.width = cameraView.videoWidth;
-                photoCanvas.height = cameraView.videoHeight;
-                canvasContext.drawImage(cameraView, 0, 0, photoCanvas.width, photoCanvas.height);
-                const photoDataUrl = photoCanvas.toDataURL('image/jpeg');
-                console.log('Photo taken:', photoDataUrl);
-                cameraView.play();
-            }
-        }
 
         startCameraButton.addEventListener('click', () => {
             startCamera();
         });
 
-        function toggleFullscreen() {
+function toggleFullscreen() {
             const docElement = document.documentElement;
 
             if (docElement.requestFullscreen) {
@@ -343,9 +487,178 @@ async function startCamera() {
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            takePhotoButton.addEventListener('click', takePhoto);
-        });
+function takePhoto() {
+    if (stream) {
+        cameraView.pause();
+        photoCanvas.width = cameraView.videoWidth;
+        photoCanvas.height = cameraView.videoHeight;
+        canvasContext.drawImage(cameraView, 0, 0, photoCanvas.width, photoCanvas.height);
+        const imageData = canvasContext.getImageData(0, 0, photoCanvas.width, photoCanvas.height);
+        const srcMat = new cv.Mat(photoCanvas.height, photoCanvas.width, cv.CV_8UC4);
+        srcMat.data.set(imageData.data);
+        const transformedMat = processImage(srcMat);
+        const processedImageArray = SequenceandSend(transformedMat);
+        console.log('Processed Image Data:', processedImageArray);
+
+        if (SAVED_LINK === '') {
+            FRAME(processedImageArray);
+        } else {
+            ARCHIVE(processedImageArray);
+        }
+
+        cameraView.play();
+    }
+}
+
+function processImage(srcMat) {
+    var height = srcMat.rows;
+    var width = srcMat.cols;
+    var size = Math.min(height, width);
+    var start_x = (width - size) / 2;
+    var start_y = (height - size) / 2;
+    var cropped_image = srcMat.roi(new cv.Rect(start_x, start_y, size, size));
+    var gray_image = new cv.Mat();
+    cv.cvtColor(cropped_image, gray_image, cv.COLOR_BGR2GRAY);
+    var thresh = new cv.Mat();
+    cv.threshold(gray_image, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU + cv.THRESH_BINARY_INV);
+    var contours = new cv.MatVector();
+    var hierarchy = new cv.Mat();
+    cv.findContours(thresh, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+    var maxArea = -1;
+    var largestContourIndex = -1;
+
+    for (var i = 0; i < contours.size(); i++) {
+        var contour = contours.get(i);
+        var area = cv.contourArea(contour);
+
+        if (area > maxArea) {
+            maxArea = area;
+            largestContourIndex = i;
+        }
+    }
+
+    if (largestContourIndex >= 0) {
+        var largestContour = contours.get(largestContourIndex);
+
+        var epsilon = 0.02 * cv.arcLength(largestContour, true);
+        var approx = new cv.Mat();
+        cv.approxPolyDP(largestContour, approx, epsilon, true);
+
+        if (approx.rows === 4) {
+
+            var quadCorners = [];
+            for (var j = 0; j < 4; j++) {
+                var x = approx.data32S[j * 2];
+                var y = approx.data32S[j * 2 + 1];
+                quadCorners.push(new cv.Point(x, y));
+            }
+
+var transformedMat = transformQuadrilateralTo512x512(cropped_image, quadCorners);
+cv.flip(transformedMat, transformedMat, 1);
+return transformedMat;
+        } else {
+        }
+        } else {
+        }
+        }
+
+function transformQuadrilateralTo512x512(cropped_image, quadCorners) {
+    var transformedMat = new cv.Mat(512, 512, cv.CV_8UC3);
+    var squareCorners = [
+        new cv.Point(0, 0),
+        new cv.Point(512, 0),
+        new cv.Point(512, 512),
+        new cv.Point(0, 512)
+    ];
+
+var quadCornersMat = new cv.Mat(4, 1, cv.CV_32FC2);
+var squareCornersMat = new cv.Mat(4, 1, cv.CV_32FC2);
+
+for (var i = 0; i < 4; i++) {
+    quadCornersMat.data32F[i * 2] = quadCorners[i].x;
+    quadCornersMat.data32F[i * 2 + 1] = quadCorners[i].y;
+    
+    squareCornersMat.data32F[i * 2] = squareCorners[i].x;
+    squareCornersMat.data32F[i * 2 + 1] = squareCorners[i].y;
+}
+var perspectiveMatrix = cv.getPerspectiveTransform(quadCornersMat, squareCornersMat);
+cv.warpPerspective(cropped_image, transformedMat, perspectiveMatrix, transformedMat.size());
+return transformedMat;
+}
+
+function SequenceandSend(processedImage) {
+if (processedImage === undefined) {
+    console.error('Processed image is undefined. Cannot proceed.');
+    return;
+  }
+    const resizedMat = new cv.Mat();
+    cv.resize(processedImage, resizedMat, new cv.Size(11, 11));
+    const processedImageArray = [];
+    for (let row = 0; row < resizedMat.rows; row++) {
+        for (let col = 0; col < resizedMat.cols; col++) {
+            const pixel = resizedMat.ucharPtr(row, col);
+            processedImageArray.push(pixel[0], pixel[1], pixel[2]);
+        }
+    }
+    resizedMat.delete();
+    return processedImageArray;
+}
+
+
+function ARCHIVE(processedImageArray, SAVED_LINK) {
+    const formData = new FormData();
+    formData.append('link', SAVED_LINK);
+    formData.append('wavesequence', processedImageArray);
+
+    fetch(SERVER_URL + '/ARCHIVE', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.status === 201) {
+            SAVED_LINK = '';
+            TOKEN_COUNT -= 1;
+        } else {
+            console.error('Failed to send data to the server.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function FRAME(processedImageArray) {
+    var formData = new FormData();
+    formData.append("wavesequence", processedImageArray);
+
+    var url = SERVER_URL + '/FRAME';
+
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(function (response) {
+        if (response.status === 201) {
+            savedLinks = [];
+            //updateButtonOpacity();
+        } else if (response.status === 200) {
+            return response.text();
+        } else {
+            console.error('Failed to send data to the server.');
+        }
+    })
+    .then(function (responseText) {
+        if (responseText) {
+            if (!/^https?:\/\//i.test(responseText)) {
+                responseText = 'https://' + responseText;
+            }
+            window.open(responseText, '_blank');
+        }
+    })
+    .catch(function (error) {
+        console.error('Error:', error);
+    });
+}
 
 var MENUVAR = 0
 
@@ -353,21 +666,21 @@ function toggleMenu() {
 MENUVAR = (MENUVAR === 0) ? 1 : 0;
 
     var openTextInputButton = document.getElementById('openTextInputButton');
-    var nodesShareButton = document.getElementById('nodesShareButton');
+    var ShareButton = document.getElementById('ShareButton');
     var tokenCountDisplay = document.getElementById('tokenCountDisplay');
     var menuButton = document.getElementById('MenuButton');
 
     if (MENUVAR === 1) {
         menuButton.style.opacity = '0.8';
-        nodesShareButton.style.opacity = '0.3';
-        nodesShareButton.style.pointerEvents = 'auto';
+        ShareButton.style.opacity = '0.3';
+        ShareButton.style.pointerEvents = 'auto';
         openTextInputButton.style.opacity = '0.3';
         openTextInputButton.style.pointerEvents = 'auto';
         tokenCountDisplay.style.opacity = '0.7';
     } else {
         menuButton.style.opacity = '0.3';
-        nodesShareButton.style.opacity = '0';
-        nodesShareButton.style.pointerEvents = 'none';
+        ShareButton.style.opacity = '0';
+        ShareButton.style.pointerEvents = 'none';
         tokenCountDisplay.style.opacity = '0';
         openTextInputButton.style.opacity = '0';
         openTextInputButton.style.pointerEvents = 'none';
@@ -375,6 +688,7 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
         SAVED_LINK = '';
     }
 }
+
 
     </script>
 </body>
