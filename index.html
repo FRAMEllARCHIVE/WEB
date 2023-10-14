@@ -202,6 +202,8 @@ text-align: center;
     width: 33vh;;
     height: auto;
     transform: translate(-50%, -50%);
+-webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 #tokenCountDisplay {
@@ -222,19 +224,20 @@ user-select: none;
     user-select: none;
             position: absolute;
             background-color: black;
-    transform: translate(-50%, -47%);
-            color: w;
+            color: white;
             border: none;
             cursor: pointer;
-    top: 50%;
-    left: 50%;
     z-index: 8;
             opacity: 0.3;
             transition: opacity 3.3s ease-in-out, visibility 0s 1s;
+  width: 20%;
+  height: auto;
         }
 
 #openButton img {
-    width: 133px;
+-webkit-tap-highlight-color: transparent;
+    user-select: none;
+    width: 144px;
     height: auto;
 }
 
@@ -309,7 +312,6 @@ QRContainer.style.display = QRContainer.style.display === 'none' ? 'block' : 'no
     shareButton.style.opacity = shareButton.style.opacity === '0.3' ? '0.9' : '0.3';
 });
 
-
 function setTemporaryOpacity(element, opacity, duration) {
     element.style.opacity = opacity;
     setTimeout(function () {
@@ -318,19 +320,27 @@ function setTemporaryOpacity(element, opacity, duration) {
 }
 
 function open_file_chooser() {
-            var fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.click();
-            fileInput.addEventListener("change", function () {
-                var selectedFile = this.files[0];
-                if (selectedFile) { 
-                processAndSendImage(selectedFile);
+  disableFullscreenChangeListener();
 
-                }
-            });
-        }
+  var fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.click();
+  fileInput.addEventListener("change", function () {
+    var selectedFile = this.files[0];
+    if (selectedFile) { 
+      processAndSendImage(selectedFile);
+    }
+  });
 
-        function processAndSendImage(selectedFile) {
+  fileInput.addEventListener("cancel", function () {
+    enableFullscreenChangeListener();
+    toggleFullscreen();
+  });
+}
+
+
+
+function processAndSendImage(selectedFile) {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
             var img = new Image();
@@ -717,12 +727,50 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
 }
 
 
-window.addEventListener('popstate', function(event) {
-  if (event.state && event.state.initialPage) {
-    // Refresh the website
-    location.reload();
+
+var isFullscreenChangeListenerActive = true;
+
+function enableFullscreenChangeListener() {
+  isFullscreenChangeListenerActive = true;
+}
+
+function disableFullscreenChangeListener() {
+  isFullscreenChangeListenerActive = false;
+}
+
+document.addEventListener('fullscreenchange', function() {
+  if (isFullscreenChangeListenerActive) {
+    if (!document.fullscreenElement) {
+      location.reload();
+    }
   }
 });
+
+
+const ShareButton1 = document.getElementById('ShareButton');
+const AddressToCopy = "https://framellarchive.github.io/WEB/";
+
+ShareButton.addEventListener('click', function () {
+    const emailText = AddressToCopy;
+    const textarea = document.createElement('textarea');
+    textarea.value = emailText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+});
+
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+const tokenCountFromURL = getQueryParam("tokens");
+
+if (tokenCountFromURL !== null) {
+    updateTokenCount(parseInt(tokenCountFromURL));
+}
+
 
 
 
