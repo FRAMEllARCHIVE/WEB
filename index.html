@@ -279,7 +279,7 @@ user-select: none;
     </div>
 
     <button id="startCameraButton" onclick="toggleFullscreen()">
-        <img src="presplash.jpg">
+        <img src="presplash.webp">
     </button>
 
     <button id="MenuButton" onclick="toggleMenu()">
@@ -295,7 +295,6 @@ user-select: none;
     <button id="openButton" onclick="open_file_chooser()">
         <img src="frame.png">
     </button>
-
 
 </body>
 
@@ -329,6 +328,8 @@ function open_file_chooser() {
     var selectedFile = this.files[0];
     if (selectedFile) { 
       processAndSendImage(selectedFile);
+    enableFullscreenChangeListener();
+    toggleFullscreen();
     }
   });
 
@@ -337,8 +338,6 @@ function open_file_chooser() {
     toggleFullscreen();
   });
 }
-
-
 
 function processAndSendImage(selectedFile) {
             var canvas = document.createElement("canvas");
@@ -388,6 +387,7 @@ if (SAVED_LINK[0]) {
                         return response.text();
                     } else {
                         console.error('Failed to send data to the server.');
+    toggleFullscreen();
                     }
                 })
                 .then(function (url) {
@@ -434,7 +434,7 @@ function updateTokenCount(newCount) {
 
 // updateTokenCount(20);
 
-        var TOKEN_COUNT = 11;
+        var TOKEN_COUNT = 0;
         var tokenCountDisplay = document.getElementById("tokenCountDisplay");
         tokenCountDisplay.textContent = TOKEN_COUNT;
 
@@ -759,20 +759,6 @@ ShareButton.addEventListener('click', function () {
     document.execCommand('copy');
     document.body.removeChild(textarea);
 });
-
-function getQueryParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-}
-
-const tokenCountFromURL = getQueryParam("tokens");
-
-if (tokenCountFromURL !== null) {
-    updateTokenCount(parseInt(tokenCountFromURL));
-}
-
-
-
 
 
     </script>
