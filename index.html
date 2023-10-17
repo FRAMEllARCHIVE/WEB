@@ -300,8 +300,7 @@ user-select: none;
 
     <script>
 
-
-let SERVER_URL = 'http://34.175.91.146:8888'
+let SERVER_URL = 'http://www.frame-archive.online:8888'
 
 const shareButton = document.getElementById('ShareButton');
 const qrContainer = document.getElementById('QRContainer');
@@ -359,7 +358,6 @@ function processAndSendImage(selectedFile) {
 
                 var processedWavesequence = processedImage.join(",");
 
-                
                 var formData = new FormData();
                 formData.append("wavesequence", processedWavesequence);
 
@@ -639,7 +637,6 @@ if (processedImage === undefined) {
     return processedImageArray;
 }
 
-
 function ARCHIVE(processedImageArray, SAVED_LINK) {
     const formData = new FormData();
     formData.append('link', SAVED_LINK);
@@ -726,8 +723,6 @@ MENUVAR = (MENUVAR === 0) ? 1 : 0;
     }
 }
 
-
-
 var isFullscreenChangeListenerActive = true;
 
 function enableFullscreenChangeListener() {
@@ -746,7 +741,6 @@ document.addEventListener('fullscreenchange', function() {
   }
 });
 
-
 const ShareButton1 = document.getElementById('ShareButton');
 const AddressToCopy = "https://framellarchive.github.io/WEB/";
 
@@ -759,7 +753,6 @@ ShareButton.addEventListener('click', function () {
     document.execCommand('copy');
     document.body.removeChild(textarea);
 });
-
 
     </script>
 </body>
