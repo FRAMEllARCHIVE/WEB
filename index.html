@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>FRAME </title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <script async src="opencv.js"></script>
+    <script async src="OpenCV.js"></script>
     <style>
         body {
             background-color: black;
@@ -53,9 +55,41 @@
     height: auto;
 }
 
-        #startCameraButton:hover {
+#startCameraButton:hover {
             opacity: 1;
         }
+
+#PURCHASE_TOKENS_BLACK {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    cursor: not-allowed;
+    outline: none;
+    z-index: 11;
+}
+
+#purchaseImage {
+    opacity: 0.33;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 3.3s;
+width: auto%;
+height: 22%;
+}
+
+#purchaseImage:hover {
+    opacity: 1;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0;
+}
 
 #MenuButton {
         user-select: none;
@@ -222,7 +256,10 @@ user-select: none;
 #openButton {
 -webkit-tap-highlight-color: transparent;
     user-select: none;
-            position: absolute;
+            position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
             background-color: black;
             color: white;
             border: none;
@@ -230,8 +267,6 @@ user-select: none;
     z-index: 8;
             opacity: 0.3;
             transition: opacity 3.3s ease-in-out, visibility 0s 1s;
-  width: 20%;
-  height: auto;
         }
 
 #openButton img {
@@ -252,9 +287,15 @@ user-select: none;
 
 <body>
 
-    <div id="tokenCountDisplay"></div>
+<div id="PURCHASE_TOKENS_BLACK">
+    <img src="frame.png" id="purchaseImage">
+</div>
 
-    <button id="ShareButton">
+
+
+<div id="tokenCountDisplay"></div>
+
+<button id="ShareButton">
         <img src="share.png">
     </button>
 
@@ -264,25 +305,25 @@ user-select: none;
 </div>
 
 
-    <div id="textInputContainer" style="display: none;">
+<div id="textInputContainer" style="display: none;">
         <div id="roundedTextInput">
             <input type="text" id="textInput" placeholder="" value="" autocapitalize="none">
         </div>
     </div>
 
-    <button id="openTextInputButton" style="pointer-events: none;">
+<button id="openTextInputButton" style="pointer-events: none;">
         <img src="plus.png">
     </button>
 
-    <div id="cameraViewContainer">
+<div id="cameraViewContainer">
         <video id="cameraView" autoplay></video>
     </div>
 
-    <button id="startCameraButton" onclick="toggleFullscreen()">
+<button id="startCameraButton" onclick="toggleFullscreen()">
         <img src="presplash.webp">
     </button>
 
-    <button id="MenuButton" onclick="toggleMenu()">
+<button id="MenuButton" onclick="toggleMenu()">
         <img src="frame.png">
     </button>
 
@@ -292,7 +333,7 @@ user-select: none;
 
     <canvas id="photoCanvas" style="display: none;"></canvas>
 
-    <button id="openButton" onclick="open_file_chooser()">
+<button id="openButton" onclick="open_file_chooser()">
         <img src="frame.png">
     </button>
 
@@ -300,7 +341,9 @@ user-select: none;
 
     <script>
 
-let SERVER_URL = 'http://www.frame-archive.online:8888'
+document.querySelector('#PURCHASE_TOKENS_BLACK').classList.add('disabled');
+
+let SERVER_URL = 'https://www.frame-archive.online'
 
 const shareButton = document.getElementById('ShareButton');
 const qrContainer = document.getElementById('QRContainer');
@@ -322,17 +365,16 @@ function open_file_chooser() {
 
   var fileInput = document.createElement("input");
   fileInput.type = "file";
+  fileInput.accept = "file/*"; 
   fileInput.click();
   fileInput.addEventListener("change", function () {
     var selectedFile = this.files[0];
     if (selectedFile) { 
       processAndSendImage(selectedFile);
-    enableFullscreenChangeListener();
-    toggleFullscreen();
     }
   });
 
-  fileInput.addEventListener("cancel", function () {
+fileInput.addEventListener("cancel", function () {
     enableFullscreenChangeListener();
     toggleFullscreen();
   });
@@ -364,13 +406,10 @@ function processAndSendImage(selectedFile) {
 var url;
 
 if (SAVED_LINK[0]) {
-    url = SERVER_URL + '/ARCHIVE?link=' + encodeURIComponent(SAVED_LINK[0]) + '&wavesequence=' + encodeURIComponent(processedWavesequence);
+    url = SERVER_URL + '/ARCHIVE?link=' + encodeURIComponent(SAVED_LINK) + '&wavesequence=' + encodeURIComponent(processedWavesequence);
 } else {
-    url = SERVER_URL + '/FRAME';
+    url = SERVER_URL + '/FRAME?wavesequence=' + encodeURIComponent(processedWavesequence);
 }
-
-                var formData = new FormData();
-                formData.append("wavesequence", processedWavesequence);
 
                 fetch(url, {
                     method: 'POST',
@@ -379,8 +418,10 @@ if (SAVED_LINK[0]) {
                 .then(function (response) {
                     if (response.status === 201) {
             SAVED_LINK = '';
+        openTextInputButton.style.opacity = '0.3';
             TOKEN_COUNT -= 1;
-                        //updateButtonOpacity();
+updateTokenCount(TOKEN_COUNT);
+tokenCountDisplay.textContent = TOKEN_COUNT;
                     } else if (response.status === 200) {
                         return response.text();
                     } else {
@@ -404,37 +445,84 @@ if (SAVED_LINK[0]) {
             img.src = URL.createObjectURL(selectedFile);
         }
 
-function setCookie(name, value) {
-    document.cookie = name + "=" + value + "; path=/";
+function saveTokenCount() {
+    localStorage.setItem("DECRYPTION ID", 9);
+    localStorage.setItem("CLIENT ID", 11);
+    localStorage.setItem("CLIENT ENCRYPT", 51);
+    localStorage.setItem("FAULT_TOLERANCE", 22);
+    localStorage.setItem("FETCH_HASH", ORDER_ID);
+    localStorage.setItem("FRAME METRIC", 12);
+    localStorage.setItem("ARCHIVE VALUE", 19);
+    localStorage.setItem("DEVICE ID", 6);
+    localStorage.setItem("OPENCV_WASM", 82);
+    localStorage.setItem("IP CONFIG", 42);
+    localStorage.setItem("CONFIG", 34);
+    localStorage.setItem("ERROR COUNT", 24);
+    localStorage.setItem("USER PREF", 1);
+    localStorage.setItem("UNUSED THEMES", 4);
+    localStorage.setItem("VERSION", 7);
+    localStorage.setItem("PACKET SIZE", 0);
+    localStorage.setItem("SEED", 8);
+    localStorage.setItem("ACC_VALUE", 17);
+    localStorage.setItem("CACHE", 12);
+    localStorage.setItem("SERVER_TIMEOUT", 2);
+    localStorage.setItem("THRESHOLD_VALUE", TOKEN_COUNT);
+    localStorage.setItem("ANALYTICS", 69);
+    localStorage.setItem("REQUEST", 33);
+    localStorage.setItem("GET", 44);
+    localStorage.setItem("PERMISSIONS", 3);
+    localStorage.setItem("SCROLL", 5);
+    localStorage.setItem("COLLECT", TOKENS_PURCHASED);
 }
 
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        while (cookie.charAt(0) === ' ') {
-            cookie = cookie.substring(1, cookie.length);
+var ORDER_ID;
+var TOKENS_PURCHASED;
+saveRECIEPT();
+updateRECIEPT(TOKENS_PURCHASED);
+
+function saveRECIEPT() {
+    var storedRECIEPT = localStorage.getItem("COLLECT");
+    if (storedRECIEPT !== null) {
+        var parsedCount = parseInt(storedRECIEPT);
+        if (!isNaN(parsedCount)) {
+            TOKENS_PURCHASED = parsedCount;
+        } else {
+            TOKENS_PURCHASED = 0;
         }
-        if (cookie.indexOf(nameEQ) === 0) {
-            return cookie.substring(nameEQ.length, cookie.length);
-        }
+    } else {
+        TOKENS_PURCHASED = 0;
     }
-    return null;
 }
 
-var TOKEN_COUNT = parseInt(getCookie("TOKEN_COUNT")) || 1;
+function updateRECIEPT(newCount) {
+    TOKENS_PURCHASED = newCount;
+    saveTokenCount();
+}
+
+
+function retrieveTokenCount() {
+    var storedTokenCount = localStorage.getItem("THRESHOLD_VALUE");
+    if (storedTokenCount !== null) {
+        var parsedCount = parseInt(storedTokenCount);
+        if (!isNaN(parsedCount)) {
+            TOKEN_COUNT = parsedCount;
+        } else {
+            TOKEN_COUNT = 0;
+        }
+    } else {
+        TOKEN_COUNT = 0;
+    }
+}
 
 function updateTokenCount(newCount) {
     TOKEN_COUNT = newCount;
-    setCookie("TOKEN_COUNT", TOKEN_COUNT);
+    tokenCountDisplay.textContent = TOKEN_COUNT;
+    saveTokenCount();
 }
 
-// updateTokenCount(20);
-
-        var TOKEN_COUNT = 0;
-        var tokenCountDisplay = document.getElementById("tokenCountDisplay");
-        tokenCountDisplay.textContent = TOKEN_COUNT;
+var TOKEN_COUNT;
+retrieveTokenCount();
+updateTokenCount(TOKEN_COUNT);
 
 const openTextInputButton = document.getElementById('openTextInputButton');
 const textInputContainer = document.getElementById('textInputContainer');
@@ -443,11 +531,17 @@ const textInput = document.getElementById('textInput');
 let SAVED_LINK = '';
 
 openTextInputButton.addEventListener('click', () => {
-    openTextInputButton.style.opacity = 0.7;
-    textInputContainer.style.display = 'block';
-    textInput.focus();
-    textInput.placeholder = SAVED_LINK;
+    if (TOKEN_COUNT < 1) {
+        document.querySelector('#PURCHASE_TOKENS_BLACK').classList.remove('disabled');
+    } else {
+        openTextInputButton.style.opacity = 0.7;
+        textInputContainer.style.display = 'block';
+        textInput.focus();
+        textInput.placeholder = SAVED_LINK;
+    }
 });
+
+
 
 textInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === 'Go') {
@@ -531,17 +625,21 @@ function takePhoto() {
         srcMat.data.set(imageData.data);
         const transformedMat = processImage(srcMat);
         const processedImageArray = SequenceandSend(transformedMat);
-        console.log('Processed Image Data:', processedImageArray);
 
-        if (SAVED_LINK === '') {
-            FRAME(processedImageArray);
+        if (processedImageArray) {
+            if (SAVED_LINK === '') {
+                FRAME(processedImageArray);
+            } else {
+                ARCHIVE(processedImageArray);
+            }
         } else {
-            ARCHIVE(processedImageArray);
+            console.error('Processed image is undefined. Cannot proceed.');
         }
 
         cameraView.play();
     }
 }
+
 
 function processImage(srcMat) {
     var height = srcMat.rows;
@@ -637,19 +735,25 @@ if (processedImage === undefined) {
     return processedImageArray;
 }
 
-function ARCHIVE(processedImageArray, SAVED_LINK) {
-    const formData = new FormData();
-    formData.append('link', SAVED_LINK);
-    formData.append('wavesequence', processedImageArray);
-
-    fetch(SERVER_URL + '/ARCHIVE', {
+function ARCHIVE(processedImageArray) {
+    var processedWavesequence = processedImageArray.join(",");
+    var formData = new FormData();
+    formData.append("wavesequence", processedWavesequence);
+    
+    var url = SERVER_URL + '/ARCHIVE?link=' + encodeURIComponent(SAVED_LINK) + '&wavesequence=' + encodeURIComponent(processedWavesequence);
+    
+    fetch(url, {
         method: 'POST',
-        body: formData
+        body: formData,
     })
     .then(response => {
+        console.log("Response received");
         if (response.status === 201) {
             SAVED_LINK = '';
+        openTextInputButton.style.opacity = '0.3';
             TOKEN_COUNT -= 1;
+updateTokenCount(TOKEN_COUNT);
+tokenCountDisplay.textContent = TOKEN_COUNT;
         } else {
             console.error('Failed to send data to the server.');
         }
@@ -660,11 +764,12 @@ function ARCHIVE(processedImageArray, SAVED_LINK) {
 }
 
 function FRAME(processedImageArray) {
+    var processedWavesequence = processedImageArray.join(",");
     var formData = new FormData();
-    formData.append("wavesequence", processedImageArray);
-
-    var url = SERVER_URL + '/FRAME';
-
+    formData.append("wavesequence", processedWavesequence);
+    
+var url = SERVER_URL + '/FRAME?wavesequence=' + encodeURIComponent(processedWavesequence);
+    
     fetch(url, {
         method: 'POST',
         body: formData,
@@ -672,7 +777,6 @@ function FRAME(processedImageArray) {
     .then(function (response) {
         if (response.status === 201) {
             savedLinks = [];
-            //updateButtonOpacity();
         } else if (response.status === 200) {
             return response.text();
         } else {
@@ -753,6 +857,17 @@ ShareButton.addEventListener('click', function () {
     document.execCommand('copy');
     document.body.removeChild(textarea);
 });
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                })
+                .catch(function (error) {
+                    console.error("Camera access error: " + error);
+                });
+        } else {
+            console.error("WebRTC and camera access are not supported in this browser.");
+        }
 
     </script>
 </body>
