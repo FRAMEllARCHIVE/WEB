@@ -365,7 +365,7 @@ function open_file_chooser() {
 
   var fileInput = document.createElement("input");
   fileInput.type = "file";
-  fileInput.accept = "file/*"; 
+  fileInput.setAttribute("capture", "filesystem");
   fileInput.click();
   fileInput.addEventListener("change", function () {
     var selectedFile = this.files[0];
